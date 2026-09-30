@@ -1,9 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "古早推特皮肤（非官方）",
-  "short_name": "古早推特",
-  "version": "0.12.4",
-  "description": "把 x.com 换成 2010 云朵版或 2013 黑条版的古早推特样子。只改外观，不读取、不上传任何数据。非官方插件，与 X Corp. 无关。",
+  "name": "__MSG_extName__",
+  "short_name": "__MSG_extShort__",
+  "version": "0.13.0",
+  "default_locale": "en",
+  "description": "__MSG_extDesc__",
   "homepage_url": "https://github.com/gabrielxie55/old-twitter-skin",
   "icons": {
     "16": "icons/icon16.png",
@@ -12,7 +13,7 @@
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "古早推特皮肤",
+    "default_title": "__MSG_extName__",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",

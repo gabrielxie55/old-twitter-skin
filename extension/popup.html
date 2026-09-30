@@ -112,32 +112,32 @@
 </style>
 </head>
 <body>
-  <header><img src="icons/icon48.png" alt="">古早推特皮肤</header>
+  <header><img src="icons/icon48.png" alt=""><span data-t="title">古早推特皮肤</span></header>
   <main>
     <div class="card">
       <label class="row">
-        <span><b>皮肤开关</b><small>所有标签页一起开关</small></span>
+        <span><b data-t="skin">皮肤开关</b><small data-t="skinHint">所有标签页一起开关</small></span>
         <span class="switch"><input type="checkbox" id="enabled"><span></span></span>
       </label>
       <label class="row" id="retroRow">
-        <span><b>网吧模式</b><small>锯齿字加像素头像，像 2010 年在网吧大头显示器上刷推</small></span>
+        <span><b data-t="retro">网吧模式</b><small data-t="retroHint">锯齿字加像素头像，像 2010 年在网吧大头显示器上刷推</small></span>
         <span class="switch"><input type="checkbox" id="retroOn"><span></span></span>
       </label>
       <label class="row" id="tabRow">
-        <span><b>这个标签页用皮肤</b><small id="tabHint">关掉只影响当前这一页，方便和原版对比</small></span>
+        <span><b data-t="tab">这个标签页用皮肤</b><small id="tabHint" data-t="tabHint">关掉只影响当前这一页，方便和原版对比</small></span>
         <span class="switch"><input type="checkbox" id="tabOn"><span></span></span>
       </label>
     </div>
     <div class="card era">
-      <div class="era-title">版本</div>
+      <div class="era-title" data-t="era">版本</div>
       <div class="era-btns">
-        <button type="button" data-era="2010">2010 云朵版</button>
-        <button type="button" data-era="2013">2013 黑条版</button>
+        <button type="button" data-era="2010" data-t="era2010">2010 云朵版</button>
+        <button type="button" data-era="2013" data-t="era2013">2013 黑条版</button>
       </div>
     </div>
     <p class="status" id="status"></p>
-    <p class="tip">想换背景？在 x.com 页面<b>左下角</b>点「换背景」</p>
-    <p class="credit">作者 <b>盖比Gabe</b> · <a href="https://www.xiaohongshu.com/user/profile/5e30224d0000000001002b1b" target="_blank" rel="noopener">小红书</a> · <a href="https://github.com/gabrielxie55" target="_blank" rel="noopener">GitHub</a></p>
+    <p class="tip" data-t="tip" data-html>想换背景？在 x.com 页面<b>左下角</b>点「换背景」</p>
+    <p class="credit"><span data-t="by">作者</span> <b>盖比Gabe</b> · <a href="https://www.xiaohongshu.com/user/profile/5e30224d0000000001002b1b" target="_blank" rel="noopener" data-t="xhs">小红书</a> · <a href="https://github.com/gabrielxie55" target="_blank" rel="noopener">GitHub</a></p>
   </main>
   <script src="popup.js"></script>
 </body>
