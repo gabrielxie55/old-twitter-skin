@@ -1705,3 +1705,10 @@ html.ots form.ots-search-pinned .ots-sq-box {
 html.ots .ots-upsell {
   display: none !important;
 }
+/* 搜索下拉框结构上在侧栏里，放开侧栏「方块不能比侧栏宽」的限制 */
+html.ots [data-testid="sidebarColumn"] form.ots-search-pinned .ots-sq-drop {
+  max-width: none !important;
+}
+html.ots [data-testid="sidebarColumn"] form.ots-search-pinned .ots-sq-drop div {
+  max-width: 100% !important;
+}

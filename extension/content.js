@@ -506,16 +506,17 @@
       while (box && box !== form && !$('svg', box)) box = box.parentElement;
       if (box && box !== form) box.classList.add('ots-sq-box');
     }
-    // 下拉建议：搜索框下面浮起来的那一层（推特打字时才生成），认出来单独给它白底、阴影、加宽
+    // 下拉建议（打字后的建议、点进去时的「最近搜索」）：从里面任意一条建议往上找，
+    // 找到不包含输入框的最外层，就是整个下拉框。每一轮重新认，不管推特把它嵌得多深
     const inputEl = $('input', form);
-    for (const d of $$(':scope > div, :scope > div > div, :scope > div > div > div, :scope > div > div > div > div', form)) {
-      if (d.dataset.otsDrop || (inputEl && d.contains(inputEl))) continue;
-      const pos = getComputedStyle(d).position;
-      if (pos !== 'absolute' && pos !== 'fixed') { d.dataset.otsDrop = 'no'; continue; }
-      if (d.getBoundingClientRect().height < 20) continue;
-      d.dataset.otsDrop = 'yes';
-      d.classList.add('ots-sq-drop');
+    const item = $('[role="listbox"], [role="option"], [data-testid="typeaheadResult"], [data-testid="typeaheadRecentSearchItem"], [id^="typeaheadDropdown"]', form);
+    let drop = null;
+    if (item) {
+      drop = item;
+      while (drop.parentElement && drop.parentElement !== form && !(inputEl && drop.parentElement.contains(inputEl))) drop = drop.parentElement;
     }
+    for (const d of $$('.ots-sq-drop', form)) if (d !== drop) d.classList.remove('ots-sq-drop');
+    if (drop && drop !== form) drop.classList.add('ots-sq-drop');
     // 调试：下拉框出现时记下它的结构（关掉后记录还留着）
     if (OTS_DEBUG) {
       const big = $$('div', form).filter((d) => !(inputEl && d.contains(inputEl)) && d.getBoundingClientRect().height > 100);

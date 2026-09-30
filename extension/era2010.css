@@ -17,12 +17,13 @@ html.ots[data-ots-era="2010"] {
   --ots-side-bg: #ddeef6;
   --ots-side-border: #c0deed;
   --ots-side-hover: #edfeff;
-  --ots-left: clamp(230px, 19vw, 290px);
-  --ots-main: clamp(540px, 46vw, 700px);
+  /* 2010 年真实页面只有 763px 宽，放到现在的大屏两边太空；按 2013 版的思路放宽：推文流约 52%，侧栏约 22% */
+  --ots-left: clamp(230px, 22vw, 340px);
+  --ots-main: clamp(540px, 52vw, 820px);
   --ots-gap: 0px;
-  --ots-bar-h: 72px;
-  --ots-head10-h: 72px;
-  scroll-padding-top: 130px;
+  --ots-bar-h: 80px;
+  --ots-head10-h: 80px;
+  scroll-padding-top: 140px;
 }
 @media (max-width: 1100px) {
   html.ots[data-ots-era="2010"] {
@@ -126,7 +127,7 @@ html.ots[data-ots-era="2010"] #ots-topbar .ots-nav10-search .ots-search {
   margin: 0;
 }
 html.ots[data-ots-era="2010"] #ots-topbar .ots-nav10-search input {
-  width: 150px;
+  width: 200px;
   height: 26px;
   padding: 3px 8px;
   border: 1px solid #cccccc;
@@ -177,8 +178,8 @@ html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] aside {
   background: transparent !important;
   text-shadow: none;
 }
-html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] section *,
-html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] aside * {
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] section *:not(form *),
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] aside *:not(form *) {
   background-color: transparent !important;
 }
 html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] h2,
@@ -187,8 +188,9 @@ html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] h2 span {
   font-size: 14px !important;
   font-weight: bold !important;
 }
-/* 推特在模块外面还包了一层白色底板，侧栏里所有底色一律透明，露出浅蓝 */
-html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] div:not([id^="ots-"]) {
+/* 推特在模块外面还包了一层白色底板，侧栏里所有底色一律透明，露出浅蓝。
+   推特原生的搜索框（已经钉到顶部导航条上）结构上也在侧栏里，要排除，不然搜索框和下拉建议都会变透明 */
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] div:not([id^="ots-"]):not(form *) {
   background-color: transparent !important;
 }
 html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] [data-testid="trend"]:hover,
@@ -545,4 +547,29 @@ html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] form.ots-search-pinn
 }
 html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] form.ots-search-pinned div.ots-sq-drop {
   background-color: #ffffff !important;
+}
+
+/* ---------- 顶部导航条放大：从字标右边铺到右边缘，字号 16px，搜索和设置靠右 ---------- */
+html.ots[data-ots-era="2010"] #ots-topbar .ots-logo10 {
+  font-size: 50px !important;
+}
+html.ots[data-ots-era="2010"] #ots-topbar .ots-nav10 {
+  flex: 1;
+  margin-left: 32px;
+  height: 46px;
+  padding: 0 12px;
+  gap: 4px;
+}
+html.ots[data-ots-era="2010"] #ots-topbar .ots-nav10 a {
+  padding: 0 11px;
+  font-size: 16px;
+  line-height: 46px;
+}
+html.ots[data-ots-era="2010"] #ots-topbar .ots-nav10-search {
+  margin: 0 4px 0 auto;
+}
+html.ots[data-ots-era="2010"] #ots-topbar .ots-nav10-search input {
+  width: 240px;
+  height: 32px;
+  font-size: 14px;
 }
