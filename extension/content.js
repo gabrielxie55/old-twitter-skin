@@ -489,11 +489,33 @@
 
   // ---------- 搜索：把推特原生的搜索框（带下拉建议）钉到顶栏搜索框的位置 ----------
   let dropInfo = [];
+  let focusInfo = [];
+  // 调试：搜索框被点中后 0.6 秒，把搜索框和下拉框每一层的状态存下来
+  document.addEventListener('focusin', (e) => {
+    if (!OTS_DEBUG || !e.target.matches || !e.target.matches('form[role="search"] input')) return;
+    setTimeout(() => {
+      const f = e.target.closest('form');
+      const out = [];
+      const d = (n) => { const r = n.getBoundingClientRect(); const c = getComputedStyle(n); return `${n.tagName.toLowerCase()}${n.getAttribute('role') ? '[' + n.getAttribute('role') + ']' : ''}${n.dataset.testid ? '#' + n.dataset.testid : ''} ${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}x${Math.round(r.height)} pos=${c.position} disp=${c.display} vis=${c.visibility} ov=${c.overflowY} mh=${c.maxHeight} bg=${c.backgroundColor.replace('rgba(0, 0, 0, 0)', 'none')} z=${c.zIndex} ${(String(n.className).match(/ots-[\w-]+/g) || []).join(',')}`; };
+      out.push('forms in page: ' + $$('form[role="search"]').length + ' same=' + (f === $('[data-testid="sidebarColumn"] form[role="search"]')) + ' native=' + document.documentElement.classList.contains('ots-search-native') + ' modal=' + document.documentElement.classList.contains('ots-modal') + ' ariaModal=' + $$('[aria-modal="true"]').length);
+      out.push('FORM ' + d(f));
+      out.push('vars ' + ['--ots-sq-top', '--ots-sq-left', '--ots-sq-width'].map((v) => document.documentElement.style.getPropertyValue(v)).join(','));
+      for (let n = e.target, i = 0; n && n !== f && i < 8; n = n.parentElement, i++) out.push(' in' + i + ' ' + d(n));
+      const it = $('[role="listbox"], [role="option"]', f);
+      if (it) for (let n = it, i = 0; n && n !== f && i < 8; n = n.parentElement, i++) out.push(' dr' + i + ' ' + d(n));
+      for (let n = f.parentElement, i = 0; n && i < 12 && n !== document.body; n = n.parentElement, i++) out.push(' up' + i + ' ' + d(n));
+      focusInfo = out;
+      schedule();
+    }, 600);
+  }, true);
   let devOpenTray = false;
   function pinSearch() {
     const mine = $('#ots-topbar .ots-search input');
     const sb = $('[data-testid="sidebarColumn"]');
-    const form = sb && $('form[role="search"]', sb);
+    // 侧栏里有时不止一个搜索框：优先用正在输入的那个，其次是已经挂到顶栏上的那个
+    const forms = sb ? $$('form[role="search"]', sb) : [];
+    const act = document.activeElement;
+    const form = forms.find((f) => f.contains(act)) || forms.find((f) => f.classList.contains('ots-search-pinned')) || forms[0];
     const on = !!(mine && form && !document.documentElement.classList.contains('ots-modal'));
     document.documentElement.classList.toggle('ots-search-native', on);
     $$('.ots-search-pinned').forEach((f) => { if (f !== form || !on) f.classList.remove('ots-search-pinned'); });
@@ -543,6 +565,18 @@
     // 推特给页面主体套了好几层独立图层，搜索框在里面再怎么往上也翻不过顶栏；
     // 把这几层的图层设置去掉，搜索框才能盖在顶栏上面
     const side = $('[data-testid="sidebarColumn"]');
+    // 推特会把搜索框外面的容器改成 fixed / sticky（点中搜索框时尤其如此）。这种容器会自成一层，
+    // 搜索框和下拉框被困在里面、排在顶部导航条和侧栏模块下面。每一轮都把它们改回普通定位
+    // 只动搜索框自己那一小条（整个侧栏外面那层大的 sticky 不能动，不然侧栏会塌掉）。
+    // 另外带模糊、变形效果的外层会让「固定在屏幕上」失效，搜索框会跑到屏幕外面，这些效果也去掉
+    for (let n = form.parentElement; n && n !== side && n !== document.body; n = n.parentElement) {
+      const cs = getComputedStyle(n);
+      if (!n.classList.contains('ots-unfix') && (cs.position === 'fixed' || cs.position === 'sticky') &&
+          n.getBoundingClientRect().height < 150) n.classList.add('ots-unfix');
+      if (!n.classList.contains('ots-unclip') && (cs.transform !== 'none' || cs.filter !== 'none' ||
+          (cs.backdropFilter && cs.backdropFilter !== 'none') || cs.perspective !== 'none' ||
+          /transform|filter|perspective/.test(cs.willChange) || /paint|layout|strict|content/.test(cs.contain))) n.classList.add('ots-unclip');
+    }
     // 每一轮都查一遍：外层包装的类名会变，某层原来被压成 auto，放开后又会冒出自己的层级
     for (let n = form.parentElement; n && n !== document.body; n = n.parentElement) {
       if (n === side && ERA === '2013') { n.classList.remove('ots-z-auto'); continue; }
@@ -1307,6 +1341,9 @@
       document.body.appendChild(box);
     }
     const lines = [];
+    lines.push('== SEARCH FOCUS (last)');
+    focusInfo.forEach((l) => lines.push(l));
+    if (focusInfo.length) { const text = lines.join('\n'); if (box.textContent !== text) box.textContent = text; return; }
     lines.push('== MEDIA  path=' + location.pathname);
     const pcm = $('[data-testid="primaryColumn"]');
     const cellsM = pcm ? $$('[data-testid="cellInnerDiv"]', pcm) : [];
