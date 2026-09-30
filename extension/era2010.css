@@ -1,0 +1,540 @@
+/* 古早推特 2010 云朵版（非官方）
+   在 2013 版 styles.css 的基础上覆盖，所有规则都挂在 html.ots[data-ots-era="2010"] 下面
+   数值来自网页存档里 2010 年 7 月的推特页面（jack、Katy Perry 个人页）实测：
+   字体 Lucida Grande 12px；内容区白底、左边圆角 5px；侧栏浅蓝 #DDEEF6、左边线 #C0DEED、右边圆角 5px；
+   推文之间 1px #EEE，鼠标移上去 #F7F7F7；时间是推文下面一行 11px #999 灰字；链接 #0084B4；
+   顶部右边一条白色圆角导航条；侧栏菜单每行 0.5em 14px 内边距，移上去 / 当前页 #EDFEFF
+   字号按 2013 版同样的思路放大一档：正文 14 → 15px，小灰字 11 → 12px */
+
+html.ots[data-ots-era="2010"] {
+  --ots-font: "Lucida Grande", "Lucida Sans Unicode", "Hiragino Sans GB", "Microsoft YaHei", "PingFang SC", sans-serif;
+  --ots-text: #333333;
+  --ots-muted: #999999;
+  --ots-faint: #999999;
+  --ots-link: #0084b4;
+  --ots-line: #eeeeee;
+  --ots-module-bg: transparent;
+  --ots-side-bg: #ddeef6;
+  --ots-side-border: #c0deed;
+  --ots-side-hover: #edfeff;
+  --ots-left: clamp(230px, 19vw, 290px);
+  --ots-main: clamp(540px, 46vw, 700px);
+  --ots-gap: 0px;
+  --ots-bar-h: 0px;
+  --ots-head10-h: 72px;
+  scroll-padding-top: 60px;
+}
+@media (max-width: 1100px) {
+  html.ots[data-ots-era="2010"] {
+    --ots-left: 200px;
+    --ots-main: 540px;
+  }
+}
+
+/* ---------- 默认背景：2010 年的天蓝底 + 一排白云 ---------- */
+html.ots[data-ots-era="2010"][data-ots-bg="sky"],
+html.ots[data-ots-era="2010"][data-ots-bg="sky"] body {
+  background-color: #c0deed !important;
+  background-image:
+    radial-gradient(ellipse 70px 34px at 120px 118px, #ffffff 62%, rgba(255, 255, 255, 0) 74%),
+    radial-gradient(ellipse 48px 44px at 168px 92px, #ffffff 62%, rgba(255, 255, 255, 0) 74%),
+    radial-gradient(ellipse 62px 30px at 220px 120px, #ffffff 62%, rgba(255, 255, 255, 0) 74%),
+    radial-gradient(ellipse 36px 30px at 92px 104px, #ffffff 60%, rgba(255, 255, 255, 0) 74%),
+    radial-gradient(ellipse 54px 26px at 610px 72px, rgba(255, 255, 255, 0.9) 62%, rgba(255, 255, 255, 0) 74%),
+    radial-gradient(ellipse 38px 34px at 648px 52px, rgba(255, 255, 255, 0.9) 62%, rgba(255, 255, 255, 0) 74%),
+    radial-gradient(ellipse 50px 24px at 690px 74px, rgba(255, 255, 255, 0.9) 62%, rgba(255, 255, 255, 0) 74%),
+    radial-gradient(ellipse 80px 36px at 980px 190px, #ffffff 62%, rgba(255, 255, 255, 0) 74%),
+    radial-gradient(ellipse 54px 50px at 1036px 160px, #ffffff 62%, rgba(255, 255, 255, 0) 74%),
+    radial-gradient(ellipse 70px 32px at 1098px 192px, #ffffff 62%, rgba(255, 255, 255, 0) 74%),
+    radial-gradient(ellipse 40px 34px at 940px 176px, #ffffff 60%, rgba(255, 255, 255, 0) 74%),
+    radial-gradient(ellipse 46px 22px at 380px 300px, rgba(255, 255, 255, 0.75) 62%, rgba(255, 255, 255, 0) 74%),
+    radial-gradient(ellipse 32px 28px at 410px 284px, rgba(255, 255, 255, 0.75) 62%, rgba(255, 255, 255, 0) 74%),
+    linear-gradient(#9fd0ea, #c0deed 420px) !important;
+  background-size: 1240px 420px, 1240px 420px, 1240px 420px, 1240px 420px, 1240px 420px, 1240px 420px,
+    1240px 420px, 1240px 420px, 1240px 420px, 1240px 420px, 1240px 420px, 1240px 420px, 1240px 420px, 100% 420px !important;
+  background-repeat: repeat-x !important;
+  background-position: 0 0 !important;
+  background-attachment: scroll !important;
+}
+
+/* ---------- 顶部：左边大字标，右边白色圆角导航条（不固定，跟着页面滚走） ---------- */
+html.ots[data-ots-era="2010"] #ots-topbar {
+  position: absolute;
+  height: var(--ots-head10-h);
+  background: none;
+  box-shadow: none;
+}
+html.ots[data-ots-era="2010"] #ots-topbar .ots-topbar-inner {
+  height: var(--ots-head10-h);
+  align-items: center;
+}
+html.ots[data-ots-era="2010"] #ots-topbar .ots-logo10 {
+  margin-top: 4px;
+  color: #3ec8f4;
+  font: 44px/1 "Arial Rounded MT Bold", "Arial Rounded MT", "Helvetica Rounded", "Nunito", sans-serif !important;
+  letter-spacing: -1px;
+  text-decoration: none;
+  -webkit-text-stroke: 1px #1c9fd6;
+  text-shadow:
+    0 0 0 #fff, 2px 2px 0 #ffffff, -2px -2px 0 #ffffff, 2px -2px 0 #ffffff, -2px 2px 0 #ffffff,
+    0 2px 0 #ffffff, 0 -2px 0 #ffffff, 2px 0 0 #ffffff, -2px 0 0 #ffffff,
+    1px 4px 4px rgba(0, 60, 100, 0.35);
+}
+html.ots[data-ots-era="2010"] #ots-topbar .ots-nav10 {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0 0 0 auto;
+  padding: 0 10px;
+  height: 38px;
+  list-style: none;
+  border-radius: 5px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+html.ots[data-ots-era="2010"] #ots-topbar .ots-nav10 a {
+  display: block;
+  padding: 0 8px;
+  color: var(--ots-link);
+  font-size: 14px;
+  line-height: 38px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+html.ots[data-ots-era="2010"] #ots-topbar .ots-nav10 a:hover {
+  text-decoration: underline;
+}
+html.ots[data-ots-era="2010"] #ots-topbar .ots-nav10 li.active a {
+  color: #333333;
+  font-weight: bold;
+}
+html.ots[data-ots-era="2010"] #ots-topbar .ots-nav10-search {
+  margin: 0 4px;
+}
+html.ots[data-ots-era="2010"] #ots-topbar .ots-nav10-search .ots-search {
+  margin: 0;
+}
+html.ots[data-ots-era="2010"] #ots-topbar .ots-nav10-search input {
+  width: 150px;
+  height: 26px;
+  padding: 3px 8px;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  background: #ffffff;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  color: #333333;
+  font-size: 13px;
+}
+
+/* ---------- 布局：内容区在左、浅蓝侧栏在右，拼成一整块 ---------- */
+html.ots[data-ots-era="2010"] main[role="main"] {
+  padding-top: var(--ots-head10-h) !important;
+}
+html.ots[data-ots-era="2010"] div:has(> [data-testid="primaryColumn"]) {
+  flex-direction: row !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+}
+html.ots[data-ots-era="2010"] [data-testid="primaryColumn"] {
+  border: 0 !important;
+  border-radius: 5px 0 0 5px !important;
+  background: #ffffff !important;
+}
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] {
+  position: relative !important;
+  top: auto !important;
+  align-self: stretch !important;
+  max-height: none !important;
+  overflow: visible !important;
+  padding: 8px 0 20px !important;
+  border-left: 1px solid var(--ots-side-border) !important;
+  border-radius: 0 5px 5px 0 !important;
+  background: var(--ots-side-bg) !important;
+  color: var(--ots-text);
+}
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] div {
+  border-radius: 0 !important;
+}
+
+/* 侧栏里推特原有的模块（有什么新鲜事、推荐关注、新闻）：去掉卡片外框，平铺在浅蓝底上 */
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] section,
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] aside {
+  margin: 0 0 6px !important;
+  border: 0 !important;
+  border-top: 1px solid var(--ots-side-border) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  text-shadow: none;
+}
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] section *,
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] aside * {
+  background-color: transparent !important;
+}
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] h2,
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] h2 span {
+  color: #4c4c4c !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+}
+/* 推特在模块外面还包了一层白色底板，侧栏里所有底色一律透明，露出浅蓝 */
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] div:not([id^="ots-"]) {
+  background-color: transparent !important;
+}
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] [data-testid="trend"]:hover,
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] [data-testid="UserCell"]:hover {
+  background-color: var(--ots-side-hover) !important;
+}
+html.ots[data-ots-era="2010"] nav[aria-label="Footer"] {
+  padding: 0 14px !important;
+}
+
+/* ---------- 侧栏顶部：自己的头像 + 三个数字 + 菜单 ---------- */
+html.ots[data-ots-era="2010"] #ots-mini-profile.ots-me10 {
+  margin: 0 0 8px !important;
+  padding: 6px 0 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  overflow: visible;
+  text-shadow: none;
+}
+.ots-me10-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 14px 10px;
+  color: #333333;
+  text-decoration: none;
+}
+.ots-me10-user img {
+  width: 36px;
+  height: 36px;
+  border-radius: 0;
+}
+.ots-me10-names {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.ots-me10-names b {
+  overflow: hidden;
+  color: #333333;
+  font-size: 15px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ots-me10-names span {
+  color: var(--ots-link);
+  font-size: 12px;
+}
+.ots-me10-user:hover b {
+  color: var(--ots-link);
+}
+html.ots[data-ots-era="2010"] .ots-stats10 {
+  display: flex;
+  margin: 0;
+  padding: 0 14px 10px;
+  list-style: none;
+}
+html.ots[data-ots-era="2010"] .ots-stats10 li + li a {
+  padding-left: 12px;
+}
+html.ots[data-ots-era="2010"] .ots-stats10 a {
+  display: block;
+  padding-right: 12px;
+  color: var(--ots-link);
+  font-size: 12px;
+  line-height: 16px;
+  text-decoration: none;
+  text-transform: lowercase;
+}
+html.ots[data-ots-era="2010"] .ots-stats10 li + li {
+  border-left: 1px solid var(--ots-side-border);
+}
+html.ots[data-ots-era="2010"] .ots-stats10 a strong {
+  display: block;
+  text-transform: none;
+  color: #333333;
+  font: bold 16px/20px "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+html.ots[data-ots-era="2010"] .ots-stats10 a:hover span {
+  text-decoration: underline;
+}
+html.ots[data-ots-era="2010"] .ots-menu10 {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--ots-side-border);
+  list-style: none;
+}
+html.ots[data-ots-era="2010"] .ots-menu10 li {
+  padding-top: 1px;
+}
+html.ots[data-ots-era="2010"] .ots-menu10 a {
+  display: block;
+  padding: 8px 14px;
+  color: var(--ots-link);
+  font-size: 14px;
+  line-height: 18px;
+  text-decoration: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+html.ots[data-ots-era="2010"] .ots-menu10 a:hover {
+  background: var(--ots-side-hover);
+}
+html.ots[data-ots-era="2010"] .ots-menu10 li.active a {
+  background: var(--ots-side-hover);
+  color: #333333;
+  font-weight: bold;
+}
+
+/* ---------- 个人页侧栏：姓名 / 位置 / 网站 / 简介 ---------- */
+#ots-side-profile {
+  flex-shrink: 0;
+  padding: 8px 14px 4px;
+  color: #333333;
+  font-size: 13px;
+  line-height: 19px;
+}
+#ots-side-profile .ots-sp-row {
+  margin-bottom: 3px;
+  overflow-wrap: anywhere;
+}
+#ots-side-profile .ots-sp-row b {
+  margin-right: 6px;
+}
+#ots-side-profile .ots-sp-row a {
+  color: var(--ots-link);
+}
+html.ots[data-ots-era="2010"] #ots-side-profile .ots-stats10 {
+  padding: 10px 0 8px;
+}
+
+/* ---------- 个人页主栏顶部：73px 大头像 + 大号用户名 ---------- */
+html.ots[data-ots-era="2010"] #ots-profile-card.ots-pc10 {
+  margin: 0 !important;
+  padding: 18px 20px 16px;
+  border-bottom: 1px solid #eeeeee;
+  border-radius: 5px 0 0 0;
+  background: #ffffff;
+}
+.ots-pc10-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ots-pc10-avatar {
+  width: 73px;
+  height: 73px;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+.ots-pc10-names {
+  flex: 1;
+  min-width: 0;
+}
+.ots-pc10-names h1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  overflow: hidden;
+  color: #222222;
+  font: bold 34px/50px Helvetica, "Hiragino Sans GB", sans-serif !important;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ots-pc10-names h1 .ots-pc-verified svg {
+  width: 22px;
+  height: 22px;
+}
+.ots-pc10-head .ots-btn {
+  flex-shrink: 0;
+  padding: 7px 16px;
+  font-size: 14px;
+}
+
+/* ---------- 首页：What's happening? 发推框 ---------- */
+#ots-whats {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid #eeeeee;
+  border-radius: 5px 0 0 0;
+  background: #ffffff;
+}
+#ots-whats .ots-wh-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+#ots-whats label {
+  color: #333333;
+  font: 22px/28px Georgia, "Songti SC", serif !important;
+}
+#ots-whats .ots-wh-count {
+  color: #cccccc;
+  font: 24px/28px Georgia, serif !important;
+}
+#ots-whats .ots-wh-box {
+  display: block;
+  width: 100%;
+  height: 56px;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  background: #ffffff;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+  cursor: text;
+}
+#ots-whats .ots-wh-box:hover {
+  border-color: #999999;
+}
+#ots-whats .ots-wh-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+#ots-whats .ots-wh-tweet {
+  padding: 5px 18px;
+  font-size: 14px;
+}
+/* 有发推框的首页，主栏上边的圆角交给发推框 */
+html.ots[data-ots-era="2010"] #ots-whats ~ * .ots-sticky {
+  border-radius: 0 !important;
+}
+
+/* ---------- 标题栏和标签 ---------- */
+html.ots[data-ots-era="2010"] .ots-sticky {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border-radius: 5px 0 0 0;
+}
+html.ots[data-ots-era="2010"][data-ots-route="home"] .ots-sticky [role="tablist"]:not(article *):has([role="tab"])::before {
+  content: var(--ots-l-home, "Home");
+  color: #666666;
+  font-size: 18px;
+  font-weight: normal;
+  text-shadow: none;
+}
+html.ots[data-ots-era="2010"] [data-testid="primaryColumn"] [role="tab"]:not(article *) span {
+  font-size: 15px !important;
+  text-shadow: none !important;
+}
+html.ots[data-ots-era="2010"] [data-testid="primaryColumn"] [role="tab"]:not(article *)[aria-selected="true"] {
+  box-shadow: inset 0 -3px 0 var(--ots-link) !important;
+}
+html.ots[data-ots-era="2010"] [data-testid="primaryColumn"] [role="tab"]:not(article *)[aria-selected="true"] span {
+  color: #333333 !important;
+}
+html.ots[data-ots-era="2010"] [data-testid="primaryColumn"] [role="tab"]:not(article *)[aria-selected="false"] span {
+  color: var(--ots-link) !important;
+}
+
+/* ---------- 推文 ---------- */
+html.ots[data-ots-era="2010"] [data-testid="cellInnerDiv"] article[data-testid="tweet"]:hover {
+  background: #f7f7f7 !important;
+}
+/* 头像方的，不带圆角 */
+html.ots[data-ots-era="2010"] [data-testid^="UserAvatar-Container"],
+html.ots[data-ots-era="2010"] [data-testid^="UserAvatar-Container"] div,
+html.ots[data-ots-era="2010"] [data-testid^="UserAvatar-Container"] img,
+html.ots[data-ots-era="2010"] [data-testid="Tweet-User-Avatar"] div {
+  border-radius: 0 !important;
+}
+/* 名字粗体链接蓝；@用户名和时间收起来，时间挪到正文下面一行 */
+html.ots[data-ots-era="2010"] [data-testid="User-Name"] > div:first-child span {
+  color: var(--ots-link) !important;
+}
+html.ots[data-ots-era="2010"] article [data-testid="User-Name"] > div:nth-child(2) {
+  display: none !important;
+}
+html.ots[data-ots-era="2010"] article div[role="link"] [data-testid="User-Name"] > div:nth-child(2) {
+  display: flex !important;
+}
+html.ots[data-ots-era="2010"] [data-testid="tweetText"],
+html.ots[data-ots-era="2010"] [data-testid="tweetText"] span {
+  color: #333333 !important;
+}
+.ots-meta10 {
+  margin: 3px 0 2px;
+  color: #999999;
+  font-size: 12px;
+  line-height: 16px;
+}
+.ots-meta10 a {
+  color: #999999 !important;
+  text-decoration: none;
+}
+.ots-meta10 a:hover {
+  text-decoration: underline;
+}
+html.ots[data-ots-era="2010"] [data-testid="tweetText"] a,
+html.ots[data-ots-era="2010"] [data-testid="tweetText"] a span {
+  color: var(--ots-link) !important;
+}
+
+/* 按钮：2010 年是灰色渐变圆角按钮 */
+html.ots[data-ots-era="2010"] .ots-btn-primary {
+  border-color: #cccccc;
+  background-color: #dddddd;
+  background-image: linear-gradient(#ffffff, #dddddd);
+  color: #333333;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+html.ots[data-ots-era="2010"] .ots-btn-primary svg {
+  color: #2da9e1;
+}
+
+/* ---------- 换背景面板里的版本切换 ---------- */
+#ots-bg-picker .ots-era-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e8e8e8;
+  font-size: 12px;
+}
+#ots-bg-picker .ots-era-row > span {
+  margin-right: 2px;
+  color: #666666;
+  font-weight: bold;
+}
+#ots-bg-picker .ots-era-row button {
+  flex: 1;
+  padding: 6px 4px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  background: linear-gradient(#ffffff, #eeeeee);
+  color: #333333;
+  cursor: pointer;
+  font: 12px/16px var(--ots-font);
+  white-space: nowrap;
+}
+#ots-bg-picker .ots-era-row button.active {
+  border-color: #057ed0;
+  background: linear-gradient(#33bcef, #019ad2);
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* 2010：搜索框在白色导航条里，方角浅灰边 */
+html.ots[data-ots-era="2010"] form.ots-search-pinned :is(label, .ots-sq-box) {
+  border: 1px solid #cccccc !important;
+  border-radius: 3px !important;
+  background: #ffffff !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+html.ots[data-ots-era="2010"] form.ots-search-pinned input {
+  color: #333333 !important;
+  font-size: 13px !important;
+}
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] form.ots-search-pinned [role="listbox"],
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] form.ots-search-pinned [id^="typeaheadDropdown"] {
+  background-color: #ffffff !important;
+}
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] form.ots-search-pinned [role="option"]:hover {
+  background-color: #f5f8fa !important;
+}
+html.ots[data-ots-era="2010"] [data-testid="sidebarColumn"] form.ots-search-pinned div.ots-sq-drop {
+  background-color: #ffffff !important;
+}

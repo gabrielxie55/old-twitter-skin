@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>古早推特</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    width: 260px;
+    margin: 0;
+    background: #f5f8fa;
+    color: #333333;
+    font: 13px/18px "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Microsoft YaHei", "PingFang SC", sans-serif;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 12px;
+    background: linear-gradient(#333333, #222222);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25);
+    color: #ffffff;
+    font-weight: bold;
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.75);
+  }
+  header img { width: 20px; height: 20px; }
+  main { padding: 14px 12px 12px; }
+  .card {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    background: #ffffff;
+    text-shadow: 0 1px 0 #ffffff;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px;
+  }
+  .row + .row { border-top: 1px solid #e8e8e8; }
+  .row b { font-size: 14px; }
+  .row small { display: block; color: #999999; font-size: 11px; line-height: 15px; }
+  .row.disabled { opacity: 0.45; }
+  .switch { position: relative; width: 46px; height: 24px; flex: none; }
+  .switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+  .switch span {
+    position: absolute; inset: 0;
+    border: 1px solid #bbbbbb;
+    border-radius: 12px;
+    background: linear-gradient(#dddddd, #f5f5f5);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+    transition: background 0.15s, border-color 0.15s;
+    pointer-events: none;
+  }
+  .switch span::after {
+    content: "";
+    position: absolute; top: 2px; left: 2px;
+    width: 18px; height: 18px;
+    border: 1px solid #bbbbbb;
+    border-radius: 50%;
+    background: linear-gradient(#ffffff, #e6e6e6);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    transition: left 0.15s;
+  }
+  .switch input:checked + span {
+    border-color: #057ed0;
+    background: linear-gradient(#33bcef, #019ad2);
+  }
+  .switch input:checked + span::after { left: 24px; border-color: #057ed0; }
+  .era { margin-top: 10px; padding: 10px 12px 12px; }
+  .era-title { margin-bottom: 8px; font-size: 14px; font-weight: bold; }
+  .era-btns { display: flex; gap: 6px; }
+  .era-btns button {
+    flex: 1;
+    padding: 7px 4px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    background: linear-gradient(#ffffff, #eeeeee);
+    color: #333333;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 16px;
+    white-space: nowrap;
+  }
+  .era-btns button.active {
+    border-color: #057ed0;
+    background: linear-gradient(#33bcef, #019ad2);
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .status { margin: 10px 2px 0; color: #999999; font-size: 12px; }
+  .tip {
+    margin: 12px 2px 0;
+    padding-top: 10px;
+    border-top: 1px solid #e8e8e8;
+    color: #999999;
+    font-size: 12px;
+  }
+  .tip b { color: #333333; font-weight: normal; }
+  .credit {
+    margin: 10px 2px 0;
+    color: #999999;
+    font-size: 12px;
+    text-align: center;
+  }
+  .credit b { color: #666666; }
+  .credit a { color: #0084b4; text-decoration: none; }
+  .credit a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+  <header><img src="icons/icon48.png" alt="">古早推特皮肤</header>
+  <main>
+    <div class="card">
+      <label class="row">
+        <span><b>皮肤开关</b><small>所有标签页一起开关</small></span>
+        <span class="switch"><input type="checkbox" id="enabled"><span></span></span>
+      </label>
+      <label class="row" id="retroRow">
+        <span><b>网吧模式</b><small>锯齿字加像素头像，像 2010 年在网吧大头显示器上刷推</small></span>
+        <span class="switch"><input type="checkbox" id="retroOn"><span></span></span>
+      </label>
+      <label class="row" id="tabRow">
+        <span><b>这个标签页用皮肤</b><small id="tabHint">关掉只影响当前这一页，方便和原版对比</small></span>
+        <span class="switch"><input type="checkbox" id="tabOn"><span></span></span>
+      </label>
+    </div>
+    <div class="card era">
+      <div class="era-title">版本</div>
+      <div class="era-btns">
+        <button type="button" data-era="2010">2010 云朵版</button>
+        <button type="button" data-era="2013">2013 黑条版</button>
+      </div>
+    </div>
+    <p class="status" id="status"></p>
+    <p class="tip">想换背景？在 x.com 页面<b>左下角</b>点「换背景」</p>
+    <p class="credit">作者 <b>盖比Gabe</b> · <a href="https://www.xiaohongshu.com/user/profile/5e30224d0000000001002b1b" target="_blank" rel="noopener">小红书</a> · <a href="https://github.com/gabrielxie55" target="_blank" rel="noopener">GitHub</a></p>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>
