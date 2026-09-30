@@ -573,3 +573,9 @@ html.ots[data-ots-era="2010"] #ots-topbar .ots-nav10-search input {
   height: 32px;
   font-size: 14px;
 }
+/* 搜索框被点中时：白色导航条上的白框要有蓝边和光晕，不然看起来像消失了 */
+html.ots[data-ots-era="2010"] form.ots-search-pinned :is(label, .ots-sq-box):focus-within {
+  border: 1px solid #56b4ef !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 6px rgba(82, 168, 236, 0.6) !important;
+}

@@ -510,10 +510,15 @@
     // 找到不包含输入框的最外层，就是整个下拉框。每一轮重新认，不管推特把它嵌得多深
     const inputEl = $('input', form);
     const item = $('[role="listbox"], [role="option"], [data-testid="typeaheadResult"], [data-testid="typeaheadRecentSearchItem"], [id^="typeaheadDropdown"]', form);
+    // 推特在搜索框下面放了一个只有 1 像素高的「挂钩」，真正的下拉框是挂在它下面浮起来的那一层（absolute）。
+    // 只给浮起来的那层加样式；挂钩本身不能碰，不然会把旁边的搜索框挤没、把下拉框裁掉
     let drop = null;
     if (item) {
-      drop = item;
-      while (drop.parentElement && drop.parentElement !== form && !(inputEl && drop.parentElement.contains(inputEl))) drop = drop.parentElement;
+      for (let n = item; n && n !== form && !(inputEl && n.contains(inputEl)); n = n.parentElement) {
+        const pos = getComputedStyle(n).position;
+        if (pos === 'absolute' || pos === 'fixed') drop = n;
+      }
+      if (!drop) drop = item.closest('[role="listbox"]') || item;
     }
     for (const d of $$('.ots-sq-drop', form)) if (d !== drop) d.classList.remove('ots-sq-drop');
     if (drop && drop !== form) drop.classList.add('ots-sq-drop');
@@ -698,21 +703,14 @@
   // ---------- 时间线：藏广告、藏插在中间的「推荐关注」 ----------
   // 推特会重复利用同一个格子装不同的推文，所以按「这格现在装的是哪条推文」来判断，每轮重新决定藏不藏
   function isAd(cell) {
+    // 只认推文头部明确写着「Ad / Promoted / 广告 / 推广」的；推特给视频播放器外层用的标记和广告一样，不能拿来判断
     const art = $('article[data-testid="tweet"]', cell);
     if (!art) return false;
-    const link = $('a[href*="/status/"]', art);
-    const key = link ? link.getAttribute('href') : art.textContent.slice(0, 80);
-    if (cell.dataset.otsAdKey === key) return cell.dataset.otsAd === '1';
-    let ad = !!$('[data-testid="placementTracking"]', cell);
-    if (!ad) {
-      ad = $$('span', art).some((s) =>
-        /^(Ad|Promoted|广告|推广)$/.test(s.textContent) &&
-        !s.closest('[data-testid="tweetText"]') && s.children.length === 0);
-    }
-    cell.dataset.otsAdKey = key;
-    cell.dataset.otsAd = ad ? '1' : '0';
-    return ad;
+    return $$('span', art).some((s) =>
+      s.children.length === 0 && /^(Ad|Promoted|广告|推广)$/.test(s.textContent.trim()) &&
+      !s.closest('[data-testid="tweetText"], [data-testid="videoPlayer"], [data-testid="videoComponent"], [data-testid="tweetPhoto"], [data-testid="card.wrapper"], div[role="link"]'));
   }
+
 
   function tidyTimeline() {
     const path = location.pathname;
@@ -1347,6 +1345,10 @@
     if (sf) {
       const r = sf.getBoundingClientRect(); const cs = getComputedStyle(sf);
       lines.push(`form pinned=${sf.classList.contains('ots-search-pinned')} pos=${cs.position} vis=${cs.visibility} disp=${cs.display} op=${cs.opacity} at ${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}x${Math.round(r.height)} inSide=${!!sf.closest('[data-testid="sidebarColumn"]')}`);
+      lines.push('focus=' + (document.activeElement ? document.activeElement.tagName.toLowerCase() + (sf.contains(document.activeElement) ? '(in form)' : '') : '-') + ' modal=' + document.documentElement.classList.contains('ots-modal') + ' native=' + document.documentElement.classList.contains('ots-search-native') + ' drop=' + ($('.ots-sq-drop', sf) ? (() => { const d = $('.ots-sq-drop', sf); const r = d.getBoundingClientRect(); return `${d.tagName.toLowerCase()} ${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}x${Math.round(r.height)} hasInput=${!!$('input', d)}`; })() : 'none'));
+      const bx = $('.ots-sq-box', sf) || $('label', sf);
+      if (bx) { const r = bx.getBoundingClientRect(); const c = getComputedStyle(bx); lines.push(`box ${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}x${Math.round(r.height)} disp=${c.display} vis=${c.visibility} op=${c.opacity} bg=${c.backgroundColor} hid=${!!bx.closest('.ots-hidden')}`); }
+      [...sf.querySelectorAll('div')].filter((d) => d.classList.contains('ots-hidden') || getComputedStyle(d).display === 'none').slice(0, 4).forEach((d) => lines.push(`  hidden-in-form: ${d.className.match(/ots-[\w-]+/g) || ''} disp=${getComputedStyle(d).display} kids=${d.children.length} «${d.textContent.slice(0, 20)}»`));
       const fr = sf.getBoundingClientRect();
       const topEl = document.elementFromPoint(fr.left + fr.width / 2, fr.top + fr.height / 2);
       lines.push('TOP at form: ' + (topEl ? topEl.tagName.toLowerCase() + '#' + (topEl.id || '') + '.' + String(topEl.className).slice(0, 30) + (sf.contains(topEl) ? ' (inside form)' : '') : 'none'));
