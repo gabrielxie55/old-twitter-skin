@@ -482,6 +482,7 @@
 
   // ---------- 搜索：把推特原生的搜索框（带下拉建议）钉到顶栏搜索框的位置 ----------
   let dropInfo = [];
+  let devOpenTray = false;
   function pinSearch() {
     const mine = $('#ots-topbar .ots-search input');
     const sb = $('[data-testid="sidebarColumn"]');
@@ -1706,6 +1707,7 @@
     });
     document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) tray.hidden = true; });
     document.body.appendChild(wrap);
+    if (devOpenTray) tray.hidden = false;
     applyBg(currentBg);
     updateEraButtons();
   }
@@ -1746,9 +1748,12 @@
       // 开发模式专用：网址后面带 #ots-era=2010 / #ots-retro=1 这类参数，直接切换（方便检查，商店版没有）
       let dev = false;
       try { dev = !('update_url' in chrome.runtime.getManifest()); } catch (e) { /* 忽略 */ }
-      const cmd = dev && location.hash.match(/ots-(era|retro)=(\w+)/);
-      if (cmd && cmd[1] === 'era') { setEra(cmd[2]); chrome.storage.local.set({ otsEra: cmd[2] === '2010' ? '2010' : '2013' }); }
-      if (cmd && cmd[1] === 'retro') { setRetro(cmd[2] === '1'); chrome.storage.local.set({ otsRetro: cmd[2] === '1' }); }
+      for (const [, key, val] of dev ? location.hash.matchAll(/ots-(era|retro|tray|off)=(\w+)/g) : []) {
+        if (key === 'era') { setEra(val); chrome.storage.local.set({ otsEra: val === '2010' ? '2010' : '2013' }); }
+        if (key === 'retro') { setRetro(val === '1'); chrome.storage.local.set({ otsRetro: val === '1' }); }
+        if (key === 'tray') devOpenTray = val === '1';
+        if (key === 'off') { tabOff = val === '1'; try { sessionStorage.setItem('otsTabOff', tabOff ? '1' : ''); } catch (e) { /* 忽略 */ } }
+      }
       applyBg(r.otsBg || 'sky');
       globalOn = r.otsEnabled !== false;
       recompute();
