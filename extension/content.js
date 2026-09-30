@@ -650,22 +650,31 @@
   // ---------- 去掉 X 的品牌露出：Premium 推销卡片、标签页标题、标签页小图标 ----------
   const FAVICON = 'data:image/png;base64,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';
 
+  // 推销卡片（Premium / Grok）只在「单张卡片」的范围里找外框：碰到时间线、推文列表的外壳就停；
+  // 每一轮重新判断，已经藏起来的框里后来长出了推文（比如切到「视频」时加载中的提示），立刻放出来
+  const TIMELINE_SHELL = 'section, [aria-label*="Timeline"], [aria-label*="时间线"], [data-testid="cellInnerDiv"] ~ [data-testid="cellInnerDiv"]';
   function hideUpsells() {
     const pc = $('[data-testid="primaryColumn"]');
-    if (!pc || /^\/(i\/premium|i\/verified|settings)/.test(location.pathname)) return;
-    const snap = document.evaluate('.//span[(contains(., "Premium") or contains(., "Grok")) and not(.//span)]', pc, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-    for (let i = 0; i < snap.snapshotLength; i++) {
-      const leaf = snap.snapshotItem(i);
-      if (leaf.closest('[data-testid="tweetText"], [data-testid="User-Name"], [data-testid="UserName"], [data-testid="UserDescription"], .ots-hidden, #ots-profile-card, #ots-whats, [role="tablist"]')) continue;
-      let box = leaf;
-      while (box.parentElement && box.parentElement !== pc) {
-        const par = box.parentElement;
-        if (par.matches('article, [data-testid="cellInnerDiv"]') || $('[data-testid="tweetText"], [role="group"], [data-testid="User-Name"], [role="tablist"]', par)) break;
-        box = par;
+    const keep = new Set();
+    if (pc && !/^\/(i\/premium|i\/verified|settings)/.test(location.pathname)) {
+      const snap = document.evaluate('.//span[(contains(., "Premium") or contains(., "Grok")) and not(.//span)]', pc, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+      for (let i = 0; i < snap.snapshotLength; i++) {
+        const leaf = snap.snapshotItem(i);
+        if (leaf.closest('[data-testid="tweetText"], [data-testid="User-Name"], [data-testid="UserName"], [data-testid="UserDescription"], #ots-profile-card, #ots-whats, [role="tablist"], article')) continue;
+        let box = leaf;
+        while (box.parentElement && box.parentElement !== pc) {
+          const par = box.parentElement;
+          if (par.matches('[data-testid="cellInnerDiv"]')) { box = par; break; }
+          if (par.matches(TIMELINE_SHELL) || $('article, [data-testid="cellInnerDiv"], [data-testid="tweetText"], [role="group"], [data-testid="User-Name"], [role="tablist"], section', par)) break;
+          box = par;
+        }
+        // 保险：框里有推文，或者框太大（比半屏还高），都不藏
+        if ($('article, [data-testid="tweetText"]', box) || box.getBoundingClientRect().height > innerHeight / 2) continue;
+        keep.add(box);
       }
-      if (box.parentElement && box.parentElement.matches('[data-testid="cellInnerDiv"]')) box = box.parentElement;
-      hide(box);
     }
+    for (const n of $$('.ots-upsell')) if (!keep.has(n)) n.classList.remove('ots-upsell');
+    keep.forEach((n) => n.classList.add('ots-upsell'));
   }
 
   function brandTidy() {
@@ -905,6 +914,9 @@
       const s = $$('span, div[dir]', appbar).find((n) => /^[\d.,]+\s?[KMB万亿]?\s*(posts?|Tweets?|个?帖子|条?推文)$/i.test(n.textContent.trim()));
       if (s) posts = s.textContent.trim().match(/^[\d.,]+\s?[KMB万亿]?/)[0].replace(/\s/g, '');
     }
+    // 切到「媒体 / 视频」这些标签时，顶上显示的是照片和视频数，不是推文数：用这个人上次记下的推文数
+    const pkey = (handle || '').toLowerCase();
+    if (posts) postsCache.set(pkey, posts); else posts = postsCache.get(pkey) || '';
 
     pageBanner = bannerImg ? big(bannerImg.src, 'banner') : '';
     rememberBanner(handle, pageBanner);
@@ -1020,6 +1032,7 @@
 
   // ---------- 2010 云朵版的部件 ----------
   let profileInfo = null;
+  const postsCache = new Map();
 
   function followButton(info) {
     if (!info.state) return null;
@@ -1295,6 +1308,22 @@
       document.body.appendChild(box);
     }
     const lines = [];
+    lines.push('== MEDIA  path=' + location.pathname);
+    const pcm = $('[data-testid="primaryColumn"]');
+    const cellsM = pcm ? $$('[data-testid="cellInnerDiv"]', pcm) : [];
+    lines.push('cells=' + cellsM.length + ' imgs in pc=' + (pcm ? $$('img', pcm).length : 0) + ' links /photo|/video=' + (pcm ? $$('a[href*="/photo/"], a[href*="/video/"]', pcm).length : 0));
+    cellsM.slice(0, 4).forEach((c, i) => {
+      const r = c.getBoundingClientRect(); const cs = getComputedStyle(c);
+      lines.push(`c${i} ${Math.round(r.width)}x${Math.round(r.height)} y${Math.round(r.top)} disp=${cs.display} hid=${c.classList.contains('ots-hidden')} art=${!!$('article', c)} «${c.textContent.trim().slice(0, 30)}»`);
+      const walk = (n, d) => {
+        if (d > 7 || lines.length > 60) return;
+        const rr = n.getBoundingClientRect(); const cc = getComputedStyle(n);
+        const flags = [n.getAttribute('role') ? '[' + n.getAttribute('role') + ']' : '', n.dataset.testid ? '#' + n.dataset.testid : '', cc.display !== 'block' && cc.display !== 'flex' ? cc.display : '', cc.paddingBottom !== '0px' ? 'pb=' + cc.paddingBottom : '', cc.aspectRatio !== 'auto' ? 'ar=' + cc.aspectRatio : '', cc.flexBasis !== 'auto' ? 'fb=' + cc.flexBasis : '', n.classList.contains('ots-hidden') ? 'OTSHID' : '', n.classList.contains('ots-fullwidth') ? 'FULLW' : '', n.className && String(n.className).includes('ots-') ? String(n.className).match(/ots-[\w-]+/g).join(',') : ''].filter(Boolean).join(' ');
+        lines.push(`${' '.repeat(d + 1)}${n.tagName.toLowerCase()} ${Math.round(rr.width)}x${Math.round(rr.height)} ${flags}`);
+        [...n.children].slice(0, 3).forEach((k) => walk(k, d + 1));
+      };
+      if (i < 2) walk(c, 0);
+    });
     lines.push('== NAMES');
     $$('[data-testid="primaryColumn"] article [data-testid="User-Name"]').slice(0, 5).forEach((un, i) => {
       const kids = [...un.children];

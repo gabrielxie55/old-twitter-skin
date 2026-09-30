@@ -1700,3 +1700,8 @@ html.ots form.ots-search-pinned input {
 html.ots form.ots-search-pinned .ots-sq-box {
   align-items: center !important;
 }
+
+/* 推销卡片（Premium / Grok）：每一轮重新判断，见 content.js hideUpsells */
+html.ots .ots-upsell {
+  display: none !important;
+}
