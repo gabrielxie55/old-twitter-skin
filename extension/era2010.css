@@ -20,9 +20,9 @@ html.ots[data-ots-era="2010"] {
   --ots-left: clamp(230px, 19vw, 290px);
   --ots-main: clamp(540px, 46vw, 700px);
   --ots-gap: 0px;
-  --ots-bar-h: 0px;
+  --ots-bar-h: 72px;
   --ots-head10-h: 72px;
-  scroll-padding-top: 60px;
+  scroll-padding-top: 130px;
 }
 @media (max-width: 1100px) {
   html.ots[data-ots-era="2010"] {
@@ -54,15 +54,26 @@ html.ots[data-ots-era="2010"][data-ots-bg="sky"] body {
     1240px 420px, 1240px 420px, 1240px 420px, 1240px 420px, 1240px 420px, 1240px 420px, 1240px 420px, 100% 420px !important;
   background-repeat: repeat-x !important;
   background-position: 0 0 !important;
-  background-attachment: scroll !important;
+  background-attachment: fixed !important;
 }
 
-/* ---------- 顶部：左边大字标，右边白色圆角导航条（不固定，跟着页面滚走） ---------- */
+/* ---------- 顶部：左边大字标，右边白色圆角导航条 ----------
+   2010 年真实的顶栏是跟着页面滚走的；这里按现在的习惯固定在顶上。
+   顶栏底下铺一条和页面背景一模一样的底（背景都固定不动），内容往下滑时从顶栏下面穿过去 */
+html.ots[data-ots-era="2010"],
+html.ots[data-ots-era="2010"] body {
+  background-attachment: fixed !important;
+}
 html.ots[data-ots-era="2010"] #ots-topbar {
-  position: absolute;
+  position: fixed;
   height: var(--ots-head10-h);
-  background: none;
+  background: inherit !important;
+  background-attachment: fixed !important;
   box-shadow: none;
+  transition: box-shadow 0.2s;
+}
+html.ots[data-ots-era="2010"].ots-scrolled #ots-topbar {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
 }
 html.ots[data-ots-era="2010"] #ots-topbar .ots-topbar-inner {
   height: var(--ots-head10-h);
@@ -454,18 +465,15 @@ html.ots[data-ots-era="2010"] [data-testid="tweetText"],
 html.ots[data-ots-era="2010"] [data-testid="tweetText"] span {
   color: #333333 !important;
 }
-.ots-meta10 {
+/* 推文下面一行「大约 5 小时前」：用正文那一行的 data-ots-meta 标记加 ::after 显示，不往推文里插元素 */
+html.ots[data-ots-era="2010"] [data-ots-meta]::after {
+  content: attr(data-ots-meta);
+  display: block;
   margin: 3px 0 2px;
   color: #999999;
   font-size: 12px;
+  font-weight: normal;
   line-height: 16px;
-}
-.ots-meta10 a {
-  color: #999999 !important;
-  text-decoration: none;
-}
-.ots-meta10 a:hover {
-  text-decoration: underline;
 }
 html.ots[data-ots-era="2010"] [data-testid="tweetText"] a,
 html.ots[data-ots-era="2010"] [data-testid="tweetText"] a span {

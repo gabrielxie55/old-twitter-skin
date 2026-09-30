@@ -559,8 +559,12 @@
       if (st.getPropertyValue(k) !== px) st.setProperty(k, px);
     }
   }
-  // 2010 版的顶栏会跟着页面滚走，搜索框要跟着一起动
-  window.addEventListener('scroll', () => { if (ERA === '2010') requestAnimationFrame(placeSearch); }, { passive: true });
+  // 页面滚动了：顶栏底下加一道阴影（2010 版用）；顶栏万一不是固定的，搜索框也跟着动
+  window.addEventListener('scroll', () => {
+    const on = scrollY > 4;
+    if (document.documentElement.classList.contains('ots-scrolled') !== on) document.documentElement.classList.toggle('ots-scrolled', on);
+    if (ERA === '2010') requestAnimationFrame(placeSearch);
+  }, { passive: true });
 
   // ---------- 滚动位置：点进帖子前记住时间线滚到哪，返回时推特没滚回去就替它滚回去 ----------
   const scrollMemo = new Map();
@@ -580,6 +584,17 @@
     scrollMemo.set(location.href, scrollY);
     slog(`click ${shortUrl(location.href)} y=${Math.round(scrollY)}`);
   }, true);
+  // 调试：记下滚动位置突然大幅往回跳（不是你自己滚的）
+  let lastY = scrollY;
+  let wheelAt = 0;
+  window.addEventListener('wheel', () => { wheelAt = Date.now(); }, { passive: true, capture: true });
+  window.addEventListener('scroll', () => {
+    if (OTS_DEBUG && lastY - scrollY > 800 && Date.now() - wheelAt > 400) {
+      const tl = $('[data-testid="primaryColumn"] section');
+      slog(`JUMP ${Math.round(lastY)} -> ${Math.round(scrollY)} h=${document.documentElement.scrollHeight} cells=${$$('[data-testid="cellInnerDiv"]').length} tl=${tl ? tl.dataset.otsTl || (tl.dataset.otsTl = String(Date.now() % 100000)) : '-'}`);
+    }
+    lastY = scrollY;
+  }, { passive: true });
   // 平时一直记着当前页面滚到哪（刚点过链接的 1 秒内不记，免得推特切页面时滚到顶的那一下把位置盖掉）
   window.addEventListener('scroll', () => {
     if (Date.now() - lastClick > 1000 && location.href === lastHref) scrollMemo.set(location.href, scrollY);
@@ -1125,28 +1140,18 @@
 
   // 推文下面一行小灰字：「大约 5 小时前」，替代 2013 那种放在名字右边的时间
   function tidyMeta10() {
-    if (ERA !== '2010') { $$('.ots-meta10').forEach((n) => n.remove()); return; }
+    // 不往推文里插新元素（推特的时间线边滚边重新生成推文，多出陌生元素会让它出错、整条时间线重新加载）；
+    // 只在正文那一行上加一个 data-ots-meta 标记，时间用样式 ::after 显示出来
+    $$('.ots-meta10').forEach((n) => n.remove());
+    if (ERA !== '2010') return;
     for (const art of $$('[data-testid="primaryColumn"] article[data-testid="tweet"]')) {
       const un = $('[data-testid="User-Name"]', art);
       const time = un && $('time', un);
       if (!time) continue;
       const anchor = $('.ots-text-row', art) || $('.ots-head-row', art);
       if (!anchor || anchor.closest('div[role="link"]')) continue;
-      let meta = anchor.nextElementSibling;
-      if (!meta || !meta.classList.contains('ots-meta10')) {
-        meta = el('div', 'ots-meta10');
-        const a = el('a');
-        a.href = time.closest('a') ? time.closest('a').getAttribute('href') : '#';
-        a.addEventListener('click', (e) => {
-          const link = $('[data-testid="User-Name"] time', art);
-          if (link && link.closest('a')) { e.preventDefault(); link.closest('a').click(); }
-        });
-        meta.appendChild(a);
-        anchor.after(meta);
-      }
       const txt = relTime(time.getAttribute('datetime'));
-      const a = meta.firstElementChild;
-      if (a.textContent !== txt) a.textContent = txt;
+      if (anchor.dataset.otsMeta !== txt) anchor.dataset.otsMeta = txt;
     }
   }
 
