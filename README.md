@@ -1,3 +1,54 @@
+# Old Twitter Skin (unofficial)
+
+A Chrome extension that makes today's x.com look like old Twitter again. Two looks, one click to switch:
+
+- **2010 Clouds**: sky-blue background with clouds, white timeline, light-blue sidebar, "What's happening?" box, and "about 5 hours ago" under every tweet
+- **2013 Black bar**: the black top bar with Home / Connect / Discover / Me, a blue bird in the middle, and the big header profile card
+
+![Today's X vs. Old Twitter 2010 Clouds](screenshots/before-after.png)
+
+By Gabe · [GitHub](https://github.com/gabrielxie55) · [Xiaohongshu](https://www.xiaohongshu.com/user/profile/5e30224d0000000001002b1b) · [中文说明](#古早推特皮肤非官方)
+
+## What it does
+
+- **Two versions**: 2010 Clouds and 2013 Black bar. Switch from the toolbar icon or the "Background" button at the bottom left of the page
+- **8 backgrounds**: sky, gingham, polka dots, mint stripes, night sky, kraft paper, classic grey, or your own header
+- **Other people's profiles use their own header as the page background**, like the custom profile backgrounds everyone had back then (it falls back to the header's colors when the image would look blurry)
+- **Internet café mode**: jagged text, pixelated avatars and faint CRT scanlines
+- **Hides what didn't exist back then**: Grok, Premium upsells, promoted posts, view counts and "Who to follow" inserts in the timeline
+- **Keeps what people actually use**: bookmarks, share, messages and history stay, restyled to match
+- **Turn it off anytime**: for every tab, or just the current tab to compare with today's X
+- Works with X in English, Simplified Chinese and Traditional Chinese
+
+| 2010 Clouds | 2013 Black bar |
+|---|---|
+| ![2010 Clouds](screenshots/2010-clouds.png) | ![2013 Black bar](screenshots/2013-black-bar.png) |
+
+![Backgrounds and version switcher](screenshots/backgrounds.png)
+
+## Install
+
+Coming to the Chrome Web Store soon. For now, install it in developer mode (takes a minute):
+
+1. Download this project (green **Code** button → **Download ZIP**) and unzip it
+2. Open `chrome://extensions` and turn on **Developer mode** (top right)
+3. Click **Load unpacked** and choose the `extension` folder inside the unzipped project
+4. Open x.com and refresh
+
+Works in desktop Chrome, Edge, Brave and Arc. Mobile browsers don't support extensions
+
+## Privacy
+
+- It only changes how x.com looks, inside your own browser. It does not call Twitter/X APIs and never posts, likes or follows anything for you
+- No data is collected or sent anywhere. There is no server and no analytics
+- The only permission is `storage`, to remember your version, background and other settings locally. [Privacy policy](PRIVACY.md)
+
+## Disclaimer
+
+Unofficial personal project, not affiliated with X Corp. Twitter is a trademark of X Corp. The bird icon and background patterns are drawn from scratch; no official Twitter assets are used
+
+---
+
 # 古早推特皮肤（非官方）
 
 一个 Chrome 插件，把现在的 x.com 换回古早推特的样子。两个版本一键切换：
@@ -54,9 +105,3 @@ extension/
 ## 声明
 
 这是一个非官方的个人项目，与 X Corp. 没有任何关系。Twitter、推特是 X Corp. 的商标。插件里的小鸟图标、背景图案都是自己画的，没有使用推特的官方素材
-
----
-
-# Old Twitter Skin (unofficial)
-
-A Chrome extension that makes today's x.com look like old Twitter. Switch between the **2010 "clouds"** look and the **2013 black-bar** look in one click. Only changes how the page looks in your own browser: it does not call Twitter's APIs and does not collect or send any data. Not affiliated with X Corp.
