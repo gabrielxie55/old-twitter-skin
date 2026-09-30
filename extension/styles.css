@@ -1495,6 +1495,7 @@ html.ots [data-testid="sidebarColumn"] .ots-no-mt {
 /* 原来包着它的几层收成 0 高度；backdrop-filter / transform 会让 fixed 定位失效，一并去掉 */
 html.ots [data-testid="sidebarColumn"] .ots-search-wrap {
   position: static !important;
+  z-index: auto !important;
   height: 0 !important;
   min-height: 0 !important;
   margin: 0 !important;
@@ -1688,4 +1689,14 @@ html.ots.ots-retro body::after {
 }
 #ots-bg-picker .ots-retro-row b {
   color: #333333;
+}
+/* 搜索框里的字上下居中 */
+html.ots form.ots-search-pinned input {
+  height: 100% !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  line-height: normal !important;
+}
+html.ots form.ots-search-pinned .ots-sq-box {
+  align-items: center !important;
 }

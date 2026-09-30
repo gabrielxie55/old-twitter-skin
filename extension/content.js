@@ -472,12 +472,19 @@
     }
 
     // 推特原生的搜索框不藏了：整个挪到顶栏里（见 pinSearch），这里把包着它的几层收成 0 高度
+    // 每一轮重新判断：页面刚加载时左栏里还没有别的模块，外壳也会被当成「只包着搜索框」压扁；
+    // 模块长出来以后要放开，否则整个左栏高度变成 0
+    const MODULES = 'h2, [role="heading"], section, aside, nav, [data-testid="trend"], [data-testid="UserCell"]';
     const form = $('form[role="search"]', sb);
+    const wraps = new Set();
     if (form) {
-      for (let n = form.parentElement; n && n !== sb && !$('h2, [role="heading"], section, aside', n); n = n.parentElement) {
-        n.classList.add('ots-search-wrap');
+      for (let n = form.parentElement; n && n !== sb; n = n.parentElement) {
+        if ($(MODULES, n) || n.children.length > 2) break;
+        wraps.add(n);
       }
     }
+    for (const n of $$('.ots-search-wrap', sb)) if (!wraps.has(n)) n.classList.remove('ots-search-wrap');
+    wraps.forEach((n) => n.classList.add('ots-search-wrap'));
   }
 
   // ---------- 搜索：把推特原生的搜索框（带下拉建议）钉到顶栏搜索框的位置 ----------
@@ -530,12 +537,12 @@
     // 推特给页面主体套了好几层独立图层，搜索框在里面再怎么往上也翻不过顶栏；
     // 把这几层的图层设置去掉，搜索框才能盖在顶栏上面
     const side = $('[data-testid="sidebarColumn"]');
+    // 每一轮都查一遍：外层包装的类名会变，某层原来被压成 auto，放开后又会冒出自己的层级
     for (let n = form.parentElement; n && n !== document.body; n = n.parentElement) {
-      if (n.dataset.otsZ) continue;
-      n.dataset.otsZ = '1';
-      if (n === side && ERA === '2013') continue;
-      const cs = getComputedStyle(n);
-      if (cs.zIndex !== 'auto' && cs.position !== 'static') n.classList.add('ots-z-auto');
+      if (n === side && ERA === '2013') { n.classList.remove('ots-z-auto'); continue; }
+      if (n.classList.contains('ots-z-auto')) continue;
+      // 弹性布局里的元素就算没定位，设了层级也会自成一层，所以不看 position
+      if (getComputedStyle(n).zIndex !== 'auto') n.classList.add('ots-z-auto');
     }
     placeSearch();
   }
@@ -1283,6 +1290,19 @@
       document.body.appendChild(box);
     }
     const lines = [];
+    lines.push('== NAMES');
+    $$('[data-testid="primaryColumn"] article [data-testid="User-Name"]').slice(0, 5).forEach((un, i) => {
+      const kids = [...un.children];
+      const cell = un.closest('[data-testid="cellInnerDiv"]');
+      lines.push(`${i} cellHid=${cell && getComputedStyle(cell).display === 'none'} art=${Math.round(un.closest('article').getBoundingClientRect().height)} kids=${kids.length} ` + kids.map((k, j) => `[${j} h${Math.round(k.getBoundingClientRect().height)} disp=${getComputedStyle(k).display} «${k.textContent.slice(0, 26)}»]`).join(' '));
+      if (kids[0] && kids[0].getBoundingClientRect().height < 2 && cell && getComputedStyle(cell).display !== 'none') {
+        for (let n = kids[0], d = 0; n && d < 6; n = n.firstElementChild, d++) { const c = getComputedStyle(n); lines.push(`   ${n.tagName.toLowerCase()} h${Math.round(n.getBoundingClientRect().height)} disp=${c.display} vis=${c.visibility} ov=${c.overflow} cls=${String(n.className).slice(0, 50)}`); }
+      }
+    });
+    const sbx = $('[data-testid="sidebarColumn"]');
+    lines.push('== LAYOUT era=' + ERA + ' route=' + document.documentElement.dataset.otsRoute + ' sidebar=' + (sbx ? (() => { const r = sbx.getBoundingClientRect(); const c = getComputedStyle(sbx); return `${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}x${Math.round(r.height)} disp=${c.display} vis=${c.visibility} pos=${c.position} hid=${sbx.classList.contains('ots-hidden')} kids=${sbx.children.length}`; })() : 'NONE'));
+    const pcx = $('[data-testid="primaryColumn"]');
+    if (pcx) { const r = pcx.getBoundingClientRect(); lines.push(`primary ${Math.round(r.left)} ${Math.round(r.width)}x${Math.round(r.height)}`); const row = pcx.parentElement; const rc = getComputedStyle(row); lines.push(`row ${row.children.length} kids dir=${rc.flexDirection} w=${Math.round(row.getBoundingClientRect().width)} kids: ` + [...row.children].map((k) => (k.dataset.testid || k.tagName.toLowerCase()) + ':' + Math.round(k.getBoundingClientRect().width) + (getComputedStyle(k).display === 'none' ? 'NONE' : '')).join(' ')); }
     lines.push('== SCROLL LOG  now y=' + Math.round(scrollY) + ' h=' + document.documentElement.scrollHeight);
     scrollLog.forEach((l) => lines.push(l));
     lines.push('== DROPDOWN (last seen)');
@@ -1292,7 +1312,10 @@
     if (sf) {
       const r = sf.getBoundingClientRect(); const cs = getComputedStyle(sf);
       lines.push(`form pinned=${sf.classList.contains('ots-search-pinned')} pos=${cs.position} vis=${cs.visibility} disp=${cs.display} op=${cs.opacity} at ${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}x${Math.round(r.height)} inSide=${!!sf.closest('[data-testid="sidebarColumn"]')}`);
-      for (let n = sf.parentElement, i = 0; n && n !== document.body && i < 14; n = n.parentElement, i++) {
+      const fr = sf.getBoundingClientRect();
+      const topEl = document.elementFromPoint(fr.left + fr.width / 2, fr.top + fr.height / 2);
+      lines.push('TOP at form: ' + (topEl ? topEl.tagName.toLowerCase() + '#' + (topEl.id || '') + '.' + String(topEl.className).slice(0, 30) + (sf.contains(topEl) ? ' (inside form)' : '') : 'none'));
+      for (let n = sf.parentElement, i = 0; n && n !== document.documentElement && i < 22; n = n.parentElement, i++) {
         const c = getComputedStyle(n);
         const bad = [c.transform !== 'none' ? 'TF' : '', c.filter !== 'none' ? 'FILT' : '', c.backdropFilter && c.backdropFilter !== 'none' ? 'BDF' : '', c.contain !== 'none' ? 'CONTAIN=' + c.contain : '', c.willChange !== 'auto' ? 'WC=' + c.willChange : '', c.display === 'none' ? 'NONE' : '', c.visibility !== 'visible' ? 'VIS' : '', c.overflow !== 'visible' ? 'OV=' + c.overflow : '', c.zIndex !== 'auto' ? 'z=' + c.zIndex : '', c.position !== 'static' ? c.position : ''].filter(Boolean).join(' ');
         const rr = n.getBoundingClientRect();
@@ -1748,13 +1771,15 @@
       // 开发模式专用：网址后面带 #ots-era=2010 / #ots-retro=1 这类参数，直接切换（方便检查，商店版没有）
       let dev = false;
       try { dev = !('update_url' in chrome.runtime.getManifest()); } catch (e) { /* 忽略 */ }
-      for (const [, key, val] of dev ? location.hash.matchAll(/ots-(era|retro|tray|off)=(\w+)/g) : []) {
+      let devBg = '';
+      for (const [, key, val] of dev ? location.hash.matchAll(/ots-(era|retro|tray|off|bg)=(\w+)/g) : []) {
+        if (key === 'bg') { devBg = val; chrome.storage.local.set({ otsBg: val }); }
         if (key === 'era') { setEra(val); chrome.storage.local.set({ otsEra: val === '2010' ? '2010' : '2013' }); }
         if (key === 'retro') { setRetro(val === '1'); chrome.storage.local.set({ otsRetro: val === '1' }); }
-        if (key === 'tray') devOpenTray = val === '1';
+        if (key === 'tray') { devOpenTray = val === '1'; const tr = $('#ots-bg-picker .ots-bg-tray'); if (tr) tr.hidden = !devOpenTray; }
         if (key === 'off') { tabOff = val === '1'; try { sessionStorage.setItem('otsTabOff', tabOff ? '1' : ''); } catch (e) { /* 忽略 */ } }
       }
-      applyBg(r.otsBg || 'sky');
+      applyBg(devBg || r.otsBg || 'sky');
       globalOn = r.otsEnabled !== false;
       recompute();
     });
